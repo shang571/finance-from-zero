@@ -341,7 +341,7 @@ table.compact td,table.compact th{padding:6px 10px;font-size:13px;}
 .quiz-foot button{font-family:var(--sans);font-size:10.5px;color:var(--muted);letter-spacing:1px;border-bottom:1px solid var(--rule);padding:2px 0;}
 .quiz-foot button:hover{color:var(--ink);border-color:var(--ink2);}
 
-/* 图表 */.chart-box{background:var(--sheet);border:1px solid var(--rule);padding:22px 18px 16px;margin:22px 0;}
+/* 图表 */.chart-box{background:var(--sheet);border:1px solid var(--rule);padding:22px 18px 16px;margin:22px 0;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;}
 /* 画布独立滚动层：宽图在窄屏横向滑动，图注不跟着跑 */
 .cv-scroll{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;}
 .cv-scroll canvas{display:block;}
@@ -1001,6 +1001,7 @@ abbr[title]:hover{color:var(--red);border-color:var(--red);}
 /* 旧站把这条写在 index.html 的内联 style 里；本站统一放到设计系统，
    否则桌面端 #navMask 会成为 grid 项目，把 .main 挤到第二行 */
 #navMask{display:none;}
+html{overflow-x:hidden;}
 .home{padding:4px 0 10px;}
 .home.hide{display:none;}
 .home-mast{border-bottom:1px solid var(--rule);padding-bottom:24px;margin-bottom:30px;}
@@ -1197,6 +1198,44 @@ body{
   .ladder-wrap{display:none!important;}
 }
 
+/* ---------- 侧栏：难度用发丝色条，不用小方块 ---------- */
+.nav-item[data-lv="入"]{border-left-color:rgba(51,111,146,.5);}
+.nav-item[data-lv="进"]{border-left-color:rgba(58,112,118,.5);}
+.nav-item[data-lv="高"]{border-left-color:rgba(176,74,51,.5);}
+.main{padding-bottom:84px;}
+.crumb-home,.crumb-vol{font-family:var(--sans);font-size:11px;letter-spacing:1.2px;color:var(--muted);cursor:pointer;padding:4px 0;border-bottom:1px solid transparent;}
+.crumb-home:hover,.crumb-vol:hover{color:var(--red);border-color:var(--red);}
+.crumb .div{color:var(--muted);}
+.crumb .now b{font-weight:600;color:var(--red);font-variant-numeric:tabular-nums;}
+.nav-item.active[data-lv="入"]{border-left-color:var(--green);}
+.nav-item.active[data-lv="进"]{border-left-color:var(--purple);}
+.nav-item.active[data-lv="高"]{border-left-color:var(--red);}
+
+/* ---------- 全站页脚 ---------- */
+.sitefoot{margin-top:64px;border-top:1px solid var(--ink2);padding:30px 0 0;position:relative;display:flex;flex-wrap:wrap;gap:0;}
+.sitefoot:before{content:'';position:absolute;left:0;right:0;top:-4px;height:1px;background:var(--rule);}
+.sf-col{flex:1 1 240px;min-width:0;padding:0 30px 26px 0;}
+.sf-col + .sf-col{border-left:1px solid var(--rule);padding-left:30px;}
+.sf-seal{width:30px;height:30px;line-height:30px;background:var(--red);color:var(--sheet);text-align:center;font-size:17px;margin-bottom:12px;}
+.sf-about h3{font-size:16px;letter-spacing:2px;margin:0 0 8px;font-weight:600;}
+.sf-about p,.sf-note p{font-size:13px;line-height:1.95;color:var(--ink2);margin:0;}
+.sf-stat{font-family:var(--sans);font-size:10.5px;letter-spacing:1.2px;color:var(--gold);margin-top:14px;}
+.sf-col h4{font-family:var(--sans);font-size:10px;letter-spacing:2.2px;color:var(--muted);margin:2px 0 12px;font-weight:600;}
+.sf-links a{display:block;font-size:13px;line-height:2.05;color:var(--ink2);cursor:pointer;border-bottom:1px solid var(--rule-2);}
+.sf-links a:hover{color:var(--red);}
+.sf-meta{display:flex;flex-wrap:wrap;gap:14px;margin-top:16px;}
+.sf-meta a,.sf-meta button{font-family:var(--sans);font-size:11px;letter-spacing:.6px;color:var(--green);border-bottom:1px solid var(--rule);padding:0 0 2px;cursor:pointer;}
+.sf-meta a:hover,.sf-meta button:hover{color:var(--red);border-color:var(--red);}
+.sf-bottom{flex:1 1 100%;border-top:1px solid var(--rule);padding:14px 0 30px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.sf-bottom span{font-family:var(--sans);font-size:9.5px;letter-spacing:2px;color:var(--muted);}
+@media(max-width:900px){
+  .sf-col{flex:1 1 100%;padding-right:0;}
+  .sf-col + .sf-col{border-left:0;border-top:1px solid var(--rule);padding-left:0;padding-top:20px;}
+}
+@media print{
+  .sitefoot{display:none!important;}
+}
+
 </style>
 </head>
 <body>
@@ -1267,9 +1306,11 @@ body{
         <button class="tbtn" id="menuBtn" aria-label="打开目录">
           <svg viewBox="0 0 16 16"><path d="M2.5 4h11M2.5 8h11M2.5 12h11"/></svg>
         </button>
-        <span id="curNum">地图</span>
-        <span class="div"></span>
-        <span class="now" id="curTitle">从这里开始</span>
+      <button class="crumb-home" id="crumbHome" type="button">首页</button>
+      <span class="div">›</span>
+      <button class="crumb-vol" id="crumbVol" type="button">地图</button>
+      <span class="div">›</span>
+      <span class="now"><b id="curNum"></b><span id="curTitle">从这里开始</span></span>
       </div>
       <div class="tools">
         <button class="tbtn" type="button" id="homeBtn"><span>首页</span></button>
@@ -1295,6 +1336,31 @@ body{
     <footer class="cfoot" id="cfoot">
       <button id="prevBtn" type="button"><span>上一章</span><em id="prevTitle">—</em></button>
       <button id="nextBtn" class="next" type="button"><span>下一章</span><em id="nextTitle">—</em></button>
+    </footer>
+
+    <footer class="sitefoot" id="sitefoot">
+      <div class="sf-col sf-about">
+        <div class="sf-seal">金</div>
+        <h3>金融学 · 从简到难</h3>
+        <p>一张地图，三类读者，100 个节点。从钱的时间价值出发，走到估值、组合、宏观与交易纪律。</p>
+        <div class="sf-stat" id="sfStat">12 卷 / 100 节点 / 40 章完整课文</div>
+      </div>
+      <div class="sf-col sf-links">
+        <h4>三条路线</h4>
+        <a data-id="time-value">01 钱的时间价值</a>
+        <a data-id="accounting-equation">10 会计等式与复式记账</a>
+        <a data-id="dcf-ddm">24 股利折现与DCF</a>
+        <a data-id="position-stop">79 仓位与止损</a>
+      </div>
+      <div class="sf-col sf-note">
+        <h4>关于本站</h4>
+        <p>零依赖静态站，图表由 Canvas 手绘。示例均为虚构主体与假设数据，仅作教学演示，不构成投资建议。</p>
+        <div class="sf-meta">
+          <a href="https://github.com/shang571/finance-from-zero" target="_blank" rel="noopener">GitHub 仓库 ↗</a>
+          <button type="button" id="sfTop">回到顶部 ↑</button>
+        </div>
+      </div>
+      <div class="sf-bottom"><span>FINANCE · FROM ZERO TO ADVANCED</span><span>纸本 × 器物徽记 × 知识星图</span></div>
     </footer>
   </main>
 </div>
@@ -4515,13 +4581,18 @@ function drawHomeCurve(){
   _axes(ctx,W,H,pad);
   var maxV=650, r=0.06;
   function yy(v){ return H-pad-(v/maxV)*(H-pad*2-20); }
-  [[100,'#336f92'],[10,'#b04a33']].forEach(function(s){
+  [[100,'#336f92','本金 100'],[10,'#b04a33','本金 10']].forEach(function(s){
     ctx.strokeStyle=s[1]; ctx.lineWidth=2; ctx.beginPath();
     for(var y=0;y<=30;y++){
       var v=s[0]*Math.pow(1+r,y), x=pad+(y/30)*(W-pad*2-20);
       if(y===0) ctx.moveTo(x,yy(v)); else ctx.lineTo(x,yy(v));
     }
     ctx.stroke();
+    var end=s[0]*Math.pow(1+r,30);
+    var ex=pad+(W-pad*2-20), ey=yy(end);
+    ctx.beginPath(); ctx.arc(ex,ey,3.6,0,Math.PI*2); ctx.fillStyle=s[1]; ctx.fill();
+    ctx.textAlign='right'; ctx.font='12px "Microsoft YaHei",sans-serif';
+    ctx.fillText(s[2]+' → 约 '+Math.round(end), ex-8, ey-9);
   });
   ctx.textAlign='center'; ctx.fillStyle='#7e96a6'; ctx.font='11px "Microsoft YaHei",sans-serif';
   [0,10,20,30].forEach(function(y){
@@ -4860,10 +4931,8 @@ window.addEventListener('resize', function(){
              +  '<span>卷'+ ['一','二','三','四','五','六','七','八','九','十','十一','十二'][r.v-1] +' · '+window.regVolName(r.v)+'</span></div>';
         lastVol = r.v;
       }
-      var color = r.l==='入' ? 'var(--green)' : (r.l==='进' ? 'var(--purple)' : 'var(--red)');
-      html += '<a class="nav-item" data-id="'+r.id+'" style="border-left-color:transparent" title="'+window.regLevelName(r.l)+' · '+window.regAudienceName(r.a)+'">'
-           +  '<span class="n">'+pad2(r.n)+'</span>'+r.t
-           +  '<span class="lv '+r.l+'">'+r.l+'</span></a>';
+      html += '<a class="nav-item" data-id="'+r.id+'" data-lv="'+r.l+'" title="'+window.regLevelName(r.l)+' · '+window.regAudienceName(r.a)+'">'
+           +  '<span class="n">'+pad2(r.n)+'</span>'+r.t+'</a>';
     });
     nav.innerHTML = html;
     Array.prototype.forEach.call(nav.querySelectorAll('.nav-item'), function(it){
@@ -4956,15 +5025,16 @@ window.addEventListener('resize', function(){
     REG.forEach(function(r){ var s=secOf(r.id); if(s) s.classList.remove('active'); });
     Array.prototype.forEach.call(document.querySelectorAll('.nav-item'), function(it){
       it.classList.remove('active');
-      it.style.borderLeftColor = 'transparent';
     });
     var nb = document.getElementById('sbnav');
     if(nb && nb.scrollTo) nb.scrollTo({top:0,behavior:'smooth'});
     if(home) home.classList.remove('hide');
     var cf = document.getElementById('cfoot'); if(cf) cf.style.visibility='hidden';
     var cn = document.getElementById('curNum'), ct = document.getElementById('curTitle');
-    if(cn) cn.textContent='地图';
+    var cv = document.getElementById('crumbVol');
+    if(cn) cn.textContent='';
     if(ct) ct.textContent='从这里开始';
+    if(cv) cv.textContent='地图';
     window.CUR_ID = null;
     document.body.classList.remove('nav-open');
     window.scrollTo(0,0);
@@ -4987,7 +5057,6 @@ window.addEventListener('resize', function(){
     Array.prototype.forEach.call(document.querySelectorAll('.nav-item'), function(it){
       var on = it.getAttribute('data-id')===id;
       it.classList.toggle('active', on);
-      it.style.borderLeftColor = on ? (r.l==='入'?'var(--green)':r.l==='进'?'var(--purple)':'var(--red)') : 'transparent';
     });
     var actNav = document.querySelector('.nav-item.active');
     var navBox = document.getElementById('sbnav');
@@ -4996,8 +5065,10 @@ window.addEventListener('resize', function(){
       if(navBox.scrollTo) navBox.scrollTo({top:Math.max(0,nt),behavior:'smooth'});
     }
     var cn=document.getElementById('curNum'), ct=document.getElementById('curTitle');
-    if(cn) cn.textContent=pad2(r.n);
+    if(cn) cn.textContent=pad2(r.n)+'　';
     if(ct) ct.textContent=r.t;
+    var cv=document.getElementById('crumbVol');
+    if(cv) cv.textContent='卷'+['一','二','三','四','五','六','七','八','九','十','十一','十二'][r.v-1]+' · '+window.regVolName(r.v);
     var pb=document.getElementById('prevBtn'), nb=document.getElementById('nextBtn');
     var pt=document.getElementById('prevTitle'), nt2=document.getElementById('nextTitle');
     var idx=r.i, prev=REG[idx-1], next=REG[idx+1];
@@ -5021,6 +5092,9 @@ window.addEventListener('resize', function(){
   var mask=document.getElementById('navMask');
   if(mask) mask.addEventListener('click', function(){ document.body.classList.remove('nav-open'); });
   var hb=document.getElementById('homeBtn'); if(hb) hb.addEventListener('click', goHome);
+  var ch=document.getElementById('crumbHome'); if(ch) ch.addEventListener('click', goHome);
+  var cvBtn=document.getElementById('crumbVol');
+  if(cvBtn) cvBtn.addEventListener('click', function(){ if(window.ovOpen) window.ovOpen(); });
   var ovb=document.getElementById('ovTopBtn'); if(ovb) ovb.addEventListener('click', function(){ if(window.ovOpen) window.ovOpen(); });
 
   /* ---------- 面板 ---------- */
@@ -5109,6 +5183,16 @@ window.addEventListener('resize', function(){
   },{passive:true});
   var toTop=document.getElementById('toTop');
   if(toTop) toTop.addEventListener('click', function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+  var sfTop=document.getElementById('sfTop');
+  if(sfTop) sfTop.addEventListener('click', function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+  Array.prototype.forEach.call(document.querySelectorAll('.sitefoot a[data-id]'), function(a){
+    a.addEventListener('click', function(){ go(a.getAttribute('data-id')); });
+  });
+  var sfStat=document.getElementById('sfStat');
+  if(sfStat){
+    var full=REG.filter(function(r){return r.d==='完';}).length;
+    sfStat.textContent=window.VOLS.length+' 卷 / '+REG.length+' 节点 / '+full+' 章完整课文';
+  }
 
   /* ---------- 打印时展开 ---------- */
   window.addEventListener('beforeprint', function(){

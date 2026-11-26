@@ -25,10 +25,8 @@
              +  '<span>卷'+ ['一','二','三','四','五','六','七','八','九','十','十一','十二'][r.v-1] +' · '+window.regVolName(r.v)+'</span></div>';
         lastVol = r.v;
       }
-      var color = r.l==='入' ? 'var(--green)' : (r.l==='进' ? 'var(--purple)' : 'var(--red)');
-      html += '<a class="nav-item" data-id="'+r.id+'" style="border-left-color:transparent" title="'+window.regLevelName(r.l)+' · '+window.regAudienceName(r.a)+'">'
-           +  '<span class="n">'+pad2(r.n)+'</span>'+r.t
-           +  '<span class="lv '+r.l+'">'+r.l+'</span></a>';
+      html += '<a class="nav-item" data-id="'+r.id+'" data-lv="'+r.l+'" title="'+window.regLevelName(r.l)+' · '+window.regAudienceName(r.a)+'">'
+           +  '<span class="n">'+pad2(r.n)+'</span>'+r.t+'</a>';
     });
     nav.innerHTML = html;
     Array.prototype.forEach.call(nav.querySelectorAll('.nav-item'), function(it){
@@ -121,15 +119,16 @@
     REG.forEach(function(r){ var s=secOf(r.id); if(s) s.classList.remove('active'); });
     Array.prototype.forEach.call(document.querySelectorAll('.nav-item'), function(it){
       it.classList.remove('active');
-      it.style.borderLeftColor = 'transparent';
     });
     var nb = document.getElementById('sbnav');
     if(nb && nb.scrollTo) nb.scrollTo({top:0,behavior:'smooth'});
     if(home) home.classList.remove('hide');
     var cf = document.getElementById('cfoot'); if(cf) cf.style.visibility='hidden';
     var cn = document.getElementById('curNum'), ct = document.getElementById('curTitle');
-    if(cn) cn.textContent='地图';
+    var cv = document.getElementById('crumbVol');
+    if(cn) cn.textContent='';
     if(ct) ct.textContent='从这里开始';
+    if(cv) cv.textContent='地图';
     window.CUR_ID = null;
     document.body.classList.remove('nav-open');
     window.scrollTo(0,0);
@@ -152,7 +151,6 @@
     Array.prototype.forEach.call(document.querySelectorAll('.nav-item'), function(it){
       var on = it.getAttribute('data-id')===id;
       it.classList.toggle('active', on);
-      it.style.borderLeftColor = on ? (r.l==='入'?'var(--green)':r.l==='进'?'var(--purple)':'var(--red)') : 'transparent';
     });
     var actNav = document.querySelector('.nav-item.active');
     var navBox = document.getElementById('sbnav');
@@ -161,8 +159,10 @@
       if(navBox.scrollTo) navBox.scrollTo({top:Math.max(0,nt),behavior:'smooth'});
     }
     var cn=document.getElementById('curNum'), ct=document.getElementById('curTitle');
-    if(cn) cn.textContent=pad2(r.n);
+    if(cn) cn.textContent=pad2(r.n)+'　';
     if(ct) ct.textContent=r.t;
+    var cv=document.getElementById('crumbVol');
+    if(cv) cv.textContent='卷'+['一','二','三','四','五','六','七','八','九','十','十一','十二'][r.v-1]+' · '+window.regVolName(r.v);
     var pb=document.getElementById('prevBtn'), nb=document.getElementById('nextBtn');
     var pt=document.getElementById('prevTitle'), nt2=document.getElementById('nextTitle');
     var idx=r.i, prev=REG[idx-1], next=REG[idx+1];
@@ -186,6 +186,9 @@
   var mask=document.getElementById('navMask');
   if(mask) mask.addEventListener('click', function(){ document.body.classList.remove('nav-open'); });
   var hb=document.getElementById('homeBtn'); if(hb) hb.addEventListener('click', goHome);
+  var ch=document.getElementById('crumbHome'); if(ch) ch.addEventListener('click', goHome);
+  var cvBtn=document.getElementById('crumbVol');
+  if(cvBtn) cvBtn.addEventListener('click', function(){ if(window.ovOpen) window.ovOpen(); });
   var ovb=document.getElementById('ovTopBtn'); if(ovb) ovb.addEventListener('click', function(){ if(window.ovOpen) window.ovOpen(); });
 
   /* ---------- 面板 ---------- */
@@ -274,6 +277,16 @@
   },{passive:true});
   var toTop=document.getElementById('toTop');
   if(toTop) toTop.addEventListener('click', function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+  var sfTop=document.getElementById('sfTop');
+  if(sfTop) sfTop.addEventListener('click', function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+  Array.prototype.forEach.call(document.querySelectorAll('.sitefoot a[data-id]'), function(a){
+    a.addEventListener('click', function(){ go(a.getAttribute('data-id')); });
+  });
+  var sfStat=document.getElementById('sfStat');
+  if(sfStat){
+    var full=REG.filter(function(r){return r.d==='完';}).length;
+    sfStat.textContent=window.VOLS.length+' 卷 / '+REG.length+' 节点 / '+full+' 章完整课文';
+  }
 
   /* ---------- 打印时展开 ---------- */
   window.addEventListener('beforeprint', function(){

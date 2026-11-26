@@ -528,13 +528,18 @@ function drawHomeCurve(){
   _axes(ctx,W,H,pad);
   var maxV=650, r=0.06;
   function yy(v){ return H-pad-(v/maxV)*(H-pad*2-20); }
-  [[100,'#336f92'],[10,'#b04a33']].forEach(function(s){
+  [[100,'#336f92','本金 100'],[10,'#b04a33','本金 10']].forEach(function(s){
     ctx.strokeStyle=s[1]; ctx.lineWidth=2; ctx.beginPath();
     for(var y=0;y<=30;y++){
       var v=s[0]*Math.pow(1+r,y), x=pad+(y/30)*(W-pad*2-20);
       if(y===0) ctx.moveTo(x,yy(v)); else ctx.lineTo(x,yy(v));
     }
     ctx.stroke();
+    var end=s[0]*Math.pow(1+r,30);
+    var ex=pad+(W-pad*2-20), ey=yy(end);
+    ctx.beginPath(); ctx.arc(ex,ey,3.6,0,Math.PI*2); ctx.fillStyle=s[1]; ctx.fill();
+    ctx.textAlign='right'; ctx.font='12px "Microsoft YaHei",sans-serif';
+    ctx.fillText(s[2]+' → 约 '+Math.round(end), ex-8, ey-9);
   });
   ctx.textAlign='center'; ctx.fillStyle='#7e96a6'; ctx.font='11px "Microsoft YaHei",sans-serif';
   [0,10,20,30].forEach(function(y){
