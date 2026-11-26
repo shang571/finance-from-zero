@@ -6,6 +6,13 @@
 
 - **批 1–4 · 已完成**：站点骨架、100 节点章表、**40 章完整课文**、其余 60 章为带 5–6 条实质要点的骨架章、21 张 Canvas 图表、知识图谱与三泳道总览、离线母版。
 
+## 线上地址
+
+- **GitHub Pages**：https://shang571.github.io/finance-from-zero/
+- **仓库**：https://github.com/shang571/finance-from-zero
+
+更新线上文件：改完 `.deploy/github-site/` 后运行 `python _deploy_gh.py`（使用本地 GitHub 令牌，走 Contents/Git Data API），约 40 秒后 Pages 重建。
+
 ## 两种形态
 
 | 形态 | 路径 | 用途 |
